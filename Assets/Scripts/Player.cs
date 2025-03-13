@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
   public float speed = 5f;
   public GameObject bulletPrefab;
   public Transform shottingOffset;
+  public AudioClip fireClip;
+  public AudioClip playerExplosionClip;
+
 
   Animator playerAnimator;
 
@@ -33,12 +37,37 @@ public class Player : MonoBehaviour
 
         playerAnimator.SetTrigger("Shoot Trigger");
 
+        AudioSource audioSrc = GetComponent<AudioSource>();
+        audioSrc.clip = fireClip;
+        audioSrc.Play();
+
         GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
-        Debug.Log("Bang!");
+
       }
       
       float horizontalInput = Input.GetAxis("Horizontal");
       Vector3 movement = new Vector3(horizontalInput * speed * Time.deltaTime, 0f, 0f);
       transform.position += movement;
+    }
+
+    void OnCollisionEnter2D(Collision2D collision){
+      if(collision.gameObject.CompareTag("Top Enemy") || collision.gameObject.CompareTag("EnemyBullet")
+         || collision.gameObject.CompareTag("Middle Enemy") || collision.gameObject.CompareTag("Bottom Enemy")){
+        
+          playerAnimator.SetTrigger("Explosion Trigger");
+          
+          AudioSource audioSrc = GetComponent<AudioSource>();
+          audioSrc.clip = playerExplosionClip;
+          AudioSource.PlayClipAtPoint(playerExplosionClip, transform.position, 1.0f);
+
+          StartCoroutine(LoadCreditsAfterDelay(playerExplosionClip.length));
+      }
+    }
+
+    IEnumerator LoadCreditsAfterDelay(float delay){
+        
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
+        SceneManager.LoadScene("CreditsScene");
     }
 }

@@ -19,6 +19,6 @@ public class Bullet : MonoBehaviour
     private void Fire()
     {
       myRigidbody2D.linearVelocity = Vector2.up * speed; 
-      Debug.Log("Wwweeeeee");
+
     }
 }

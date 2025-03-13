@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -10,8 +11,9 @@ public class EnemyManager : MonoBehaviour
     [Header("Movement Settings")]
     public float baseSpeed = 1f; 
     public float moveDownAmount = 0.5f;
-    public float leftBoundary = -40f;
-    public float rightBoundary = 40f;
+    public float leftBoundary = -12f;
+    public float rightBoundary = 12f;
+    public float speedIncrease = 0.2f;
 
     [Header("Firing Settings")]
     public float fireInterval = 3f; 
@@ -39,6 +41,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
         initialEnemyCount = enemies.Count;
+        Debug.Log(initialEnemyCount);
         currentSpeed = baseSpeed;
         StartCoroutine(EnemyFireRoutine());
     }
@@ -81,15 +84,17 @@ public class EnemyManager : MonoBehaviour
     public void RemoveEnemy(Enemy enemy){
         if(enemies.Contains(enemy)){
             enemies.Remove(enemy);
+            Debug.Log(enemies.Count);
+            if(enemies.Count == 0){
+                SceneManager.LoadScene("CreditsScene");
+            }
             UpdateSpeed();
         }
     }
 
     void UpdateSpeed(){
-        int remaining = enemies.Count;
-        if(remaining > 0){
-            currentSpeed = baseSpeed * ((float)initialEnemyCount / remaining);
-        }
+        int destroyed = initialEnemyCount - enemies.Count;
+        currentSpeed = baseSpeed + (speedIncrease * destroyed);
     }
 
     IEnumerator EnemyFireRoutine(){
@@ -102,6 +107,7 @@ public class EnemyManager : MonoBehaviour
                     firingEnemy.FireBullet();
                 }
             }
+            yield return new WaitForSeconds(fireInterval);
         }
     }
 }

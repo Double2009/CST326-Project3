@@ -9,6 +9,8 @@ TagManager:
   - Bottom Enemy
   - Mystery Enemy
   - Barricade
+  - PlayerBullet
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX
@@ -17,8 +19,8 @@ TagManager:
   - Water
   - UI
   - Bullet
-  - 
-  - 
+  - Enemy Bullet
+  - Enemy
   - 
   - 
   - 

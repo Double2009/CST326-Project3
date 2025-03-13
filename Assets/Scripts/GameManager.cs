@@ -10,10 +10,11 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI highScoreText; 
-    public GameObject scoreTableText; 
+    public AudioClip music; 
 
     private int currentScore;
     private int highScore;
+    
 
 
     void Awake(){
@@ -27,8 +28,10 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        scoreTableText.SetActive(false);
         highScore = PlayerPrefs.GetInt("HighScore", 0);
+        AudioSource audioSrc = GetComponent<AudioSource>();
+        audioSrc.clip = music;
+        audioSrc.Play();
         UpdateScoreUI();
     }
 
